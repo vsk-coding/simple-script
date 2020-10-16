@@ -1,8 +1,14 @@
 SIMPLE INSTRUCTIONS FOR YOU
 
 1. clone the repo using the following
-    git clone https://github.com/vsk-coding/simple-script.git
+
+```diff
++  git clone https://github.com/vsk-coding/simple-script.git
+```
+   
+    
 2. Change directory to the cloned repo 
+
     cd simple-script
 3. Run the go script
     go run script.go
