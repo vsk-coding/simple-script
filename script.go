@@ -19,26 +19,67 @@ func CmdExec(args ...string) ([]byte, error) {
 	return out, nil
 }
 
-func main() {
-	cnp, err := CmdExec("kubectl", "get", "cnp", "--all-namespaces", "-o", "name")
-	val := ""
-	var val2 []string
-	if err == nil {
-		for i := 0; i < len(cnp); i++ {
-			if string(cnp[i]) != "\n" {
-				val += string(cnp[i])
-			} else {
-				val2 = append(val2, val)
-				val = ""
-			}
+// nameSpaceReturn function returns the name and namespace from the log
+func nameSpaceReturn(args []byte, i int, j int) (string, string) {
 
+	nameSpace := ""
+	name := ""
+	temp := ""
+	for ; j < i; j++ {
+		for string(args[j]) != " " {
+			if string(args[j]) != "\n" {
+				temp += string(args[j])
+
+			}
+			j++
 		}
-		for i := 0; i < len(val2); i++ {
-			println()
-			println(i+1, " --> ", val2[i])
-			desc, _ := CmdExec("kubectl", "describe", val2[i])
-			println()
-			println(string(desc))
+		if string(args[j]) == " " {
+			for string(args[j]) == " " {
+				j++
+			}
+			nameSpace = temp
+			break
+		}
+	}
+	temp = ""
+	for ; j < i; j++ {
+		for string(args[j]) != " " {
+			temp += string(args[j])
+			j++
+		}
+		if string(args[j]) == " " {
+			name = temp
+			break
+		}
+	}
+	return name, nameSpace
+}
+
+func main() {
+	get := "get"
+	cnp, err := CmdExec("kubectl", get, "cnp", "--all-namespaces")
+
+	nameSpace := ""
+	name := ""
+	count := 0
+	if err == nil {
+		ruleNo := 1
+		for i := 0; i < len(cnp); i++ {
+
+			if string(cnp[i]) == "\n" {
+				name, nameSpace = nameSpaceReturn(cnp, i, count)
+
+				count = i
+				rules, erro := CmdExec("kubectl", "describe", "cnp", name, "--namespace", nameSpace)
+				if erro == nil {
+					println()
+					println("Rule ", ruleNo, " ==> ", name)
+					println()
+					println(string(rules))
+					ruleNo++
+				}
+
+			}
 		}
 
 	}
