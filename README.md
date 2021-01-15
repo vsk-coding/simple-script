@@ -19,3 +19,4 @@ SIMPLE INSTRUCTIONS FOR YOU
 ```
 
 NB : please do install golang and make sure the binary is added to PATH. refer https://golang.org/doc/install for further notes
+Test
